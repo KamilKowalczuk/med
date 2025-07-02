@@ -1,0 +1,3 @@
+pyairtable
+python-dotenv
+google-cloud-functions-framework
