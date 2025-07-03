@@ -11,9 +11,7 @@ BASE_ID = os.environ.get("AIRTABLE_BASE_ID")
 
 # Inicjalizacja połączenia z tabelami w Airtable
 # Upewnij się, że nazwy tabel są identyczne z Twoimi w Airtable
-patients_table = Table(API_KEY, BASE_ID, 'Pacjentki')
-attack_list_table = Table(API_KEY, BASE_ID, 'Do oddzwonienia')
-
+patients_table = Table(API_KEY, BASE_ID, 'Teams')
 # --- Funkcja 1: Główny Asystent Reaktywny ("Usypiający") ---
 @functions_framework.http
 def main_reactive_handler(request, *args):
@@ -129,39 +127,6 @@ def daily_awakener_handler(request, *args):
         return 'Błąd serwera', 500
 
 
-# --- Funkcja 3: Menedżer Dynamicznej Listy "Do Ataku" ---
-@functions_framework.http
-def attack_list_manager(request, *args):
-    """
-    Odpowiednik Scenariusza 3. Wywoływana przez webhook z Airtable.
-    Zarządza dodawaniem i usuwaniem pacjentek z 'Listy Do Ataku'.
-    """
-    request_json = request.get_json(silent=True)
-    if not request_json or 'record_id' not in request_json:
-        return 'Brak ID rekordu w zapytaniu.', 400
-
-    record_id = request_json['record_id']
-    print(f"Menedżer Listy Do Ataku - otrzymano żądanie dla rekordu: {record_id}")
-
-    try:
-        patient_record = patients_table.get(record_id)
-        status = patient_record['fields'].get('Status')
-        
-        # Wyszukaj czy pacjentka jest na liście 'Do Ataku'
-        formula = f"{{Link do Pacjentki}} = '{record_id}'"
-        existing_entry = attack_list_table.all(formula=formula)
-
-        # Logika DODAWANIA do listy
-        if status in ['⏳ Oddzwonić później', '📵 Nie odbiera']:
-            if not existing_entry: # Dodaj tylko jeśli jeszcze jej tam nie ma
-                attack_list_table.create({
-                    'Link do Pacjentki': [record_id],
-                    'Status w momencie dodania': status,
-                    'Data dodania': datetime.now().strftime('%Y-%m-%dT%H:%M:%S.000Z')
-                })
-                print(f"Dodano rekord {record_id} do Listy 'Do Ataku'.")
-            else:
-                print(f"Rekord {record_id} już jest na Liście 'Do Ataku'.")
 
         # Logika USUWANIA z listy
         else:
