@@ -125,20 +125,3 @@ def daily_awakener_handler(request, *args):
     except Exception as e:
         print(f"Wystąpił krytyczny błąd podczas wybudzania: {e}")
         return 'Błąd serwera', 500
-
-
-
-        # Logika USUWANIA z listy
-        else:
-            if existing_entry:
-                entry_id_to_delete = existing_entry[0]['id']
-                attack_list_table.delete(entry_id_to_delete)
-                print(f"Usunięto rekord {record_id} z Listy 'Do Ataku'.")
-            else:
-                print(f"Rekord {record_id} nie jest na Liście 'Do Ataku', brak akcji.")
-
-        return 'OK', 200
-
-    except Exception as e:
-        print(f"Wystąpił krytyczny błąd w menedżerze listy: {e}")
-        return 'Błąd serwera', 500
