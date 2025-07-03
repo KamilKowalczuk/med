@@ -16,7 +16,7 @@ attack_list_table = Table(API_KEY, BASE_ID, 'Do oddzwonienia')
 
 # --- Funkcja 1: Główny Asystent Reaktywny ("Usypiający") ---
 @functions_framework.http
-def main_reactive_handler(request):
+def main_reactive_handler(request, *args):
     """
     Odpowiednik Scenariusza 1. Wywoływana przez webhook z Airtable przy aktualizacji rekordu.
     Obsługuje logikę archiwizacji, rezygnacji i regułę SIMP.
@@ -92,7 +92,7 @@ def main_reactive_handler(request):
 
 # --- Funkcja 2: Proaktywny Asystent "Wybudzający" ---
 @functions_framework.http
-def daily_awakener_handler(request):
+def daily_awakener_handler(request, *args):
     """
     Odpowiednik Scenariusza 2. Wywoływana przez Google Cloud Scheduler codziennie o 5 rano.
     Wyszukuje pacjentki do "wybudzenia".
@@ -131,7 +131,7 @@ def daily_awakener_handler(request):
 
 # --- Funkcja 3: Menedżer Dynamicznej Listy "Do Ataku" ---
 @functions_framework.http
-def attack_list_manager(request):
+def attack_list_manager(request, *args):
     """
     Odpowiednik Scenariusza 3. Wywoływana przez webhook z Airtable.
     Zarządza dodawaniem i usuwaniem pacjentek z 'Listy Do Ataku'.
